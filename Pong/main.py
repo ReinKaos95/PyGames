@@ -4,12 +4,14 @@ from player import Player
 from ball import Ball
 from menu import Menu
 from pause_menu import PauseMenu
+from fonts import Fonts
 
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode(RES)
         self.title = pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+        self.fonts = Fonts()
         
         #players
         
@@ -22,7 +24,31 @@ class Game:
         # Pelota
         self.ball = Ball(Res_Width // 2 - 15, Res_Height // 2 - 15, 30, 30, WHITE, 3, 3)
         
+        # puntuaciones
+        self.score1 = 0  # Puntuación del jugador 1
+        self.score2 = 0  # Puntuación del jugador 2
+        
+        # Mostrar puntuaciones
+        self.score_font = self.fonts.get_score_font()
+        
+        #pausa
         self.pause_menu = PauseMenu(self.screen)
+        
+    def reset_ball(self):
+        """Reinicia la pelota al centro del campo."""
+        self.ball.rect.x = Res_Width // 2 - self.ball.rect.width // 2
+        self.ball.rect.y = Res_Height // 2 - self.ball.rect.height // 2
+        self.ball.speed_x *= -1  # Cambia la dirección horizontal
+        
+    def draw_score(self):
+        """Dibuja las puntuaciones en la pantalla."""
+        score1_surface = self.font.render(str(self.score1), True, WHITE)
+        score2_surface = self.font.render(str(self.score2), True, WHITE)
+        
+        # Posición de las puntuaciones
+        self.screen.blit(score1_surface, (Res_Width // 4, 20))  # Puntuación del jugador 1
+        self.screen.blit(score2_surface, (3 * Res_Width // 4, 20))  # Puntuación del jugador 2
+
         
     def update(self):
         """Actualiza la pantalla y controla los FPS."""
@@ -49,14 +75,20 @@ class Game:
             self.player1.draw(self.screen)
             self.player2.draw(self.screen)
             self.ball.draw(self.screen)
-            
+            self.draw_score()  # Dibujar las puntuaciones
             # Movimiento de los jugadores
             
             self.player1.move(pygame.K_w, pygame.K_s, Res_Height) # Jugador 1: W/S
             self.player2.move(pygame.K_UP, pygame.K_DOWN, Res_Height) # Jugador 2: Flechas
             
+            # Movimiento de la pelota y detección de puntos
             if self.ball.move(Res_Width, Res_Height):
-                print("Punto marcado")
+                if self.ball.rect.left <= 0:  # Punto para el jugador 2
+                    self.score2 += 1
+                    self.reset_ball()
+                elif self.ball.rect.right >= Res_Width:  # Punto para el jugador 1
+                    self.score1 += 1
+                    self.reset_ball()
                 
             self.ball.check_collision(self.player1, self.player2)
             
