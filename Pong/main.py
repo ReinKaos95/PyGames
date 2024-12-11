@@ -42,8 +42,8 @@ class Game:
         
     def draw_score(self):
         """Dibuja las puntuaciones en la pantalla."""
-        score1_surface = self.font.render(str(self.score1), True, WHITE)
-        score2_surface = self.font.render(str(self.score2), True, WHITE)
+        score1_surface = self.score_font.render(str(self.score1), True, WHITE)
+        score2_surface = self.score_font.render(str(self.score2), True, WHITE)
         
         # Posición de las puntuaciones
         self.screen.blit(score1_surface, (Res_Width // 4, 20))  # Puntuación del jugador 1

@@ -41,7 +41,7 @@ class Ball:
             
             
     def adjust_speed(self, player):
-        if self.rect.centery < player.rect.top + player.rect.height:
+        if self.rect.centery < player.rect.top + player.rect.height // 4:
             self.speed_y = -abs(self.speed_y)
-        elif self.rect.centery > player.rect.bottom + player.rect.height:
+        elif self.rect.centery > player.rect.bottom - player.rect.height // 4:
             self.speed_y = abs(self.speed_y)
