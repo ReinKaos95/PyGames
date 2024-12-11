@@ -32,11 +32,11 @@ class Ball:
         
     def check_collision(self, player1, player2):
         if self.rect.colliderect(player1.rect):
-            self.speed_x = abs(self.speed_x)
+            self.speed_x = abs(self.speed_x) + 0.5
             self.adjust_speed(player1)
             
         if self.rect.colliderect(player2.rect):
-            self.speed_x = -abs(self.speed_x)
+            self.speed_x = -abs(self.speed_x) + 0.5
             self.adjust_speed(player2)
             
             

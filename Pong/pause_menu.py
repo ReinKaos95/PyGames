@@ -28,16 +28,19 @@ class PauseMenu:
             self.screen.blit(title_surface, (Res_Width // 2 - title_surface.get_width() // 2, 50))
             
             start_button = pygame.Rect(Res_Width // 2 - 100, 150, 200, 50)
-            pygame.draw.rect(self.screen, WHITE, start_button)
-            start_text = self.button_font.render("Continue", True, BLACK)
-            self.screen.blit(start_text, (start_button.x + (start_button.width - start_text.get_width()) // 2,
-                                          start_button.y + (start_button.height - start_text.get_height()) // 2))
+            draw_button(self.screen, start_button, "Continue", self.button_font, BLACK, WHITE)
             
             quit_button = pygame.Rect(Res_Width // 2 -100, 250, 200, 50)
-            pygame.draw.rect(self.screen, WHITE, quit_button)
-            quit_text  = self.button_font.render("Exit", True, BLACK)
-            self.screen.blit(quit_text, (quit_button.x + (quit_button.width - quit_text.get_width()) // 2,
-                                          quit_button.y + (quit_button.height - quit_text.get_height()) // 2))
+            draw_button(self.screen, quit_button, "Exit", self.button_font, BLACK, WHITE)
+            
+            # Detectar posición del mouse para hover
+            mouse_pos = pygame.mouse.get_pos()
+            if start_button.collidepoint(mouse_pos) or quit_button.collidepoint(mouse_pos):
+                if not self.hover_sound_played:  # Reproducir sonido de hover una vez
+                    self.hover_sound.play()
+                    self.hover_sound_played = True
+            else:
+                self.hover_sound_played = False  # Restablecer para futuras reproducciones
             
             pygame.display.flip()
             

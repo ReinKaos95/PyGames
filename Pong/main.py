@@ -49,6 +49,16 @@ class Game:
         self.screen.blit(score1_surface, (Res_Width // 4, 20))  # Puntuación del jugador 1
         self.screen.blit(score2_surface, (3 * Res_Width // 4, 20))  # Puntuación del jugador 2
 
+    def select_difficulty(self):
+        print("selecciona una dificultad: 1. Facil 2. Medio 3. Dificil")
+        level = int(input("Elige una opción: "))
+        if level == 1:
+            self.ball.speed_x, self.ball.speed_y = 3, 3
+        elif level == 2:
+            self.ball.speed_x, self.ball.speed_y = 5, 5
+        elif level == 3:
+            self.ball.speed_x, self.ball.speed_y = 7, 7
+        
         
     def update(self):
         """Actualiza la pantalla y controla los FPS."""
@@ -90,6 +100,10 @@ class Game:
                     self.score1 += 1
                     self.reset_ball()
                 
+            if self.score1 == MAX_SCORE or self.score2 == MAX_SCORE:
+                print(f"Jugador {'1' if self.score1 == MAX_SCORE else '2'} gana!")
+                break
+                
             self.ball.check_collision(self.player1, self.player2)
             
             self.update()
@@ -98,4 +112,5 @@ if __name__ == '__main__':
     game = Game()
     menu = Menu(game.screen)
     menu.show()
+    game.select_difficulty() 
     game.run()
