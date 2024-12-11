@@ -17,3 +17,10 @@ class Player():
             self.rect.y -= self.speed
         if keys[down_key] and self.rect.bottom < screen_height:
             self.rect.y += self.speed
+            
+    def auto_move(self, ball, screen_height):
+        if ball.rect.centery > self.rect.centery and self.rect.bottom < screen_height:
+            self.rect.y += self.speed
+            
+        if ball.rect.centery < self.rect.centery and self.rect.top > 0:
+            self.rect.y -= self.speed

@@ -13,7 +13,7 @@ class Ball:
         
     def move(self, screen_width, screen_height):
         """Mueve la pelota y verifica colisiones con los bordes."""
-        self.rect.x += self.speed_x
+        self.rect.x += self.speed_x 
         self.rect.y += self.speed_y
         
         # Rebote en los bordes superior e inferior
@@ -21,9 +21,11 @@ class Ball:
             self.speed_y *= -1
             
         # Rebote en los bordes izquierdo y derecho (para reiniciar más adelante)
-        if self.rect.left <= 0 or self.rect.right >= screen_width:
-            return True # Indica que se marcó un punto
-        return False
+        if self.rect.left <= 0:
+            return "right", abs(self.speed_x)
+        elif self.rect.right >= screen_width:
+            return "left", abs(self.speed_x)
+        return None, None
     
     def bounce(self):
         """Invierte la dirección horizontal de la pelota."""
@@ -32,7 +34,7 @@ class Ball:
         
     def check_collision(self, player1, player2):
         if self.rect.colliderect(player1.rect):
-            self.speed_x = abs(self.speed_x) + 0.5
+            self.speed_x = abs(self.speed_x) - 0.5
             self.adjust_speed(player1)
             
         if self.rect.colliderect(player2.rect):
@@ -41,7 +43,5 @@ class Ball:
             
             
     def adjust_speed(self, player):
-        if self.rect.centery < player.rect.top + player.rect.height // 4:
-            self.speed_y = -abs(self.speed_y)
-        elif self.rect.centery > player.rect.bottom - player.rect.height // 4:
-            self.speed_y = abs(self.speed_y)
+        relative_intersect = (self.rect.centery - player.rect.centery) / (player.rect.height / 2)
+        self.speed_y = relative_intersect * abs(self.speed_x)  # Ajusta el ángulo según el impacto

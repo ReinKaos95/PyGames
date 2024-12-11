@@ -4,6 +4,7 @@ from player import Player
 from ball import Ball
 from menu import Menu
 from pause_menu import PauseMenu
+from difficulty_menu import DifficultyMenu
 from fonts import Fonts
 
 class Game:
@@ -34,6 +35,20 @@ class Game:
         #pausa
         self.pause_menu = PauseMenu(self.screen)
         
+        # Mostrar menú de dificultad
+        difficulty_menu = DifficultyMenu(self.screen)
+        selected_difficulty = difficulty_menu.show()
+        
+        # Configurar la velocidad según la dificultad
+        if selected_difficulty == "easy":
+            ball_speed_x, ball_speed_y = 3, 3
+        elif selected_difficulty == "medium":
+            ball_speed_x, ball_speed_y = 5, 5
+        elif selected_difficulty == "hard":
+            ball_speed_x, ball_speed_y = 7, 7
+        else:
+            ball_speed_x, ball_speed_y = 3, 3  # Por defecto
+        
     def reset_ball(self):
         """Reinicia la pelota al centro del campo."""
         self.ball.rect.x = Res_Width // 2 - self.ball.rect.width // 2
@@ -49,15 +64,6 @@ class Game:
         self.screen.blit(score1_surface, (Res_Width // 4, 20))  # Puntuación del jugador 1
         self.screen.blit(score2_surface, (3 * Res_Width // 4, 20))  # Puntuación del jugador 2
 
-    def select_difficulty(self):
-        print("selecciona una dificultad: 1. Facil 2. Medio 3. Dificil")
-        level = int(input("Elige una opción: "))
-        if level == 1:
-            self.ball.speed_x, self.ball.speed_y = 3, 3
-        elif level == 2:
-            self.ball.speed_x, self.ball.speed_y = 5, 5
-        elif level == 3:
-            self.ball.speed_x, self.ball.speed_y = 7, 7
         
         
     def update(self):
@@ -91,6 +97,7 @@ class Game:
             self.player1.move(pygame.K_w, pygame.K_s, Res_Height) # Jugador 1: W/S
             self.player2.move(pygame.K_UP, pygame.K_DOWN, Res_Height) # Jugador 2: Flechas
             
+            """
             # Movimiento de la pelota y detección de puntos
             if self.ball.move(Res_Width, Res_Height):
                 if self.ball.rect.left <= 0:  # Punto para el jugador 2
@@ -99,7 +106,16 @@ class Game:
                 elif self.ball.rect.right >= Res_Width:  # Punto para el jugador 1
                     self.score1 += 1
                     self.reset_ball()
-                
+             """
+            
+            point_side, multiplier = self.ball.move(Res_Width, Res_Height)
+            if point_side == "left":
+                self.score1 += 1 * multiplier
+                self.reset_ball()
+            if point_side == "right":
+                self.score2 += 1 * multiplier
+                self.reset_ball()
+            
             if self.score1 == MAX_SCORE or self.score2 == MAX_SCORE:
                 print(f"Jugador {'1' if self.score1 == MAX_SCORE else '2'} gana!")
                 break
@@ -112,5 +128,4 @@ if __name__ == '__main__':
     game = Game()
     menu = Menu(game.screen)
     menu.show()
-    game.select_difficulty() 
     game.run()
