@@ -21,9 +21,10 @@ class Game:
         
         # Jugador 2 (derecha)
         self.player2 = Player(Res_Width - 40, Res_Height // 2 - 30, 20, 60, WHITE, PLAYER_SPEED)
-        
+                
         # Pelota
         self.ball = Ball(Res_Width // 2 - 15, Res_Height // 2 - 15, 30, 30, WHITE, 3, 3)
+        
         
         # puntuaciones
         self.score1 = 0  # Puntuación del jugador 1
@@ -34,6 +35,11 @@ class Game:
         
         #pausa
         self.pause_menu = PauseMenu(self.screen)
+        
+        # Detener la música cuando se ingrese al juego
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+            
         
         # Mostrar menú de dificultad
         difficulty_menu = DifficultyMenu(self.screen)
@@ -48,6 +54,10 @@ class Game:
             ball_speed_x, ball_speed_y = 7, 7
         else:
             ball_speed_x, ball_speed_y = 3, 3  # Por defecto
+        
+        # Asignar la velocidad a la pelota
+        self.ball.speed_x = ball_speed_x
+        self.ball.speed_y = ball_speed_y
         
     def reset_ball(self):
         """Reinicia la pelota al centro del campo."""
@@ -64,8 +74,7 @@ class Game:
         self.screen.blit(score1_surface, (Res_Width // 4, 20))  # Puntuación del jugador 1
         self.screen.blit(score2_surface, (3 * Res_Width // 4, 20))  # Puntuación del jugador 2
 
-        
-        
+
     def update(self):
         """Actualiza la pantalla y controla los FPS."""
         pygame.display.flip()
@@ -82,6 +91,7 @@ class Game:
                     self.pause_menu.show()  # Mostrar el menú de pausa
                 
     def run(self):
+        pygame.mixer.music.stop()
         """Ciclo principal del juego."""
         while True:
             self.events()
@@ -96,18 +106,7 @@ class Game:
             
             self.player1.move(pygame.K_w, pygame.K_s, Res_Height) # Jugador 1: W/S
             self.player2.move(pygame.K_UP, pygame.K_DOWN, Res_Height) # Jugador 2: Flechas
-            
-            """
-            # Movimiento de la pelota y detección de puntos
-            if self.ball.move(Res_Width, Res_Height):
-                if self.ball.rect.left <= 0:  # Punto para el jugador 2
-                    self.score2 += 1
-                    self.reset_ball()
-                elif self.ball.rect.right >= Res_Width:  # Punto para el jugador 1
-                    self.score1 += 1
-                    self.reset_ball()
-             """
-            
+                  
             point_side, multiplier = self.ball.move(Res_Width, Res_Height)
             if point_side == "left":
                 self.score1 += 1 * multiplier
@@ -116,7 +115,7 @@ class Game:
                 self.score2 += 1 * multiplier
                 self.reset_ball()
             
-            if self.score1 == MAX_SCORE or self.score2 == MAX_SCORE:
+            if self.score1 >= MAX_SCORE or self.score2 >= MAX_SCORE:
                 print(f"Jugador {'1' if self.score1 == MAX_SCORE else '2'} gana!")
                 break
                 

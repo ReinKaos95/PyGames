@@ -7,6 +7,10 @@ class Menu:
     def __init__(self, screen):
         self.screen = screen
         self.fonts = Fonts()
+
+        # Cargar música de fondo
+        pygame.mixer.music.load("audio/pong.wav")  # Asegúrate de que la ruta sea correcta
+        pygame.mixer.music.play(-1, 0.0)  # Reproduce en bucle (-1 significa bucle infinito)
         
         if not pygame.mixer.get_init():
             pygame.mixer.init()

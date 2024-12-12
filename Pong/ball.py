@@ -6,6 +6,7 @@ class Ball:
         self.color = color
         self.speed_x = speed_x
         self.speed_y = speed_y
+        self.max_speed = 10 
     
     def draw(self, window):
         """Dibuja la pelota en la ventana."""
@@ -27,21 +28,29 @@ class Ball:
             return "left", abs(self.speed_x)
         return None, None
     
-    def bounce(self):
+    def bounce(self, is_horizontal=True):
         """Invierte la dirección horizontal de la pelota."""
-        self.speed_x *= -1
+        if is_horizontal:
+            self.speed_x *= -1
+        else:
+            self.speed_y *= -1
+            
+        self.speed_x = max(min(self.speed_x, self.max_speed), -self.max_speed)
+        self.speed_y = max(min(self.speed_y, self.max_speed), -self.max_speed)
         
         
     def check_collision(self, player1, player2):
         if self.rect.colliderect(player1.rect):
-            self.speed_x = abs(self.speed_x) - 0.5
+            self.speed_x = abs(self.speed_x)   # No reducir la velocidad
             self.adjust_speed(player1)
             
         if self.rect.colliderect(player2.rect):
-            self.speed_x = -abs(self.speed_x) + 0.5
+            self.speed_x = -abs(self.speed_x) # No reducir la velocidad
             self.adjust_speed(player2)
-            
-            
+
     def adjust_speed(self, player):
         relative_intersect = (self.rect.centery - player.rect.centery) / (player.rect.height / 2)
-        self.speed_y = relative_intersect * abs(self.speed_x)  # Ajusta el ángulo según el impacto
+        
+        self.speed_y = relative_intersect * abs(self.speed_x) # Mantiene el ángulo
+        
+        self.speed_y = max(min(self.speed_y, 6), -6)
