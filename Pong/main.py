@@ -6,6 +6,7 @@ from menu import Menu
 from pause_menu import PauseMenu
 from difficulty_menu import DifficultyMenu
 from fonts import Fonts
+from endgame import EndGame
 
 class Game:
     def __init__(self):
@@ -13,17 +14,6 @@ class Game:
         self.title = pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.fonts = Fonts()
-        
-        #players
-        
-        # Jugador 1 (izquierda)
-        self.player1 = Player(20, Res_Height // 2 - 30, 20, 60, WHITE, PLAYER_SPEED)
-        
-        # Jugador 2 (derecha)
-        self.player2 = Player(Res_Width - 40, Res_Height // 2 - 30, 20, 60, WHITE, PLAYER_SPEED)
-                
-        # Pelota
-        self.ball = Ball(Res_Width // 2 - 15, Res_Height // 2 - 15, 30, 30, WHITE, 3, 3)
         
         
         # puntuaciones
@@ -54,11 +44,23 @@ class Game:
             ball_speed_x, ball_speed_y = 7, 7
         else:
             ball_speed_x, ball_speed_y = 3, 3  # Por defecto
+            
+        #players
+        
+        # Jugador 1 (izquierda)
+        self.player1 = Player(20, Res_Height // 2 - 30, 20, 60, WHITE, PLAYER_SPEED)
+        
+        # Jugador 2 (derecha)
+        self.player2 = Player(Res_Width - 40, Res_Height // 2 - 30, 20, 60, WHITE, PLAYER_SPEED)
+                
+        # Pelota
+        self.ball = Ball(Res_Width // 2 - 15, Res_Height // 2 - 15, 30, 30, WHITE, 3, 3)
         
         # Asignar la velocidad a la pelota
+
         self.ball.speed_x = ball_speed_x
         self.ball.speed_y = ball_speed_y
-        
+
     def reset_ball(self):
         """Reinicia la pelota al centro del campo."""
         self.ball.rect.x = Res_Width // 2 - self.ball.rect.width // 2
@@ -96,6 +98,9 @@ class Game:
         while True:
             self.events()
             self.screen.fill(BLACK) # Fondo negro
+
+            # Dibujar la línea central
+            pygame.draw.rect(self.screen, WHITE, (Res_Width // 2 - 1, 0, 2, Res_Height))  # Línea central de 2 píxeles de ancho
             
             # Dibujar jugadores
             self.player1.draw(self.screen)
@@ -115,13 +120,27 @@ class Game:
                 self.score2 += 1 * multiplier
                 self.reset_ball()
             
+            # Comprobar si se ha alcanzado el puntaje máximo
             if self.score1 >= MAX_SCORE or self.score2 >= MAX_SCORE:
-                print(f"Jugador {'1' if self.score1 == MAX_SCORE else '2'} gana!")
-                break
+                winner = "Player 1" if self.score1 >= MAX_SCORE else "Player 2"
+                end_game_screen = EndGame(self.screen, winner)
+                action = end_game_screen.show()
+
+                if action == "restart":
+                    self.reset_game()  # Reiniciar el juego
+                    continue
+                else:
+                    break  # Salir del juego
                 
             self.ball.check_collision(self.player1, self.player2)
             
             self.update()
+    
+    def reset_game(self):
+        """Reinicia el juego para una nueva partida."""
+        self.score1 = 0
+        self.score2 = 0
+        self.reset_ball()
         
 if __name__ == '__main__':
     game = Game()
