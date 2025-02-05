@@ -1,20 +1,24 @@
-#Config
+#Resolucion
 
-Res = Width, Height = 640, 480 # Resolucion
+Width, Height = 640, 480
 
-Title = "Snake" # Titulo
+#Title
 
-FPS = 60 # Frames por segundo
+Title = 'Snake Game'
 
-# Colores definidos
+#Frames por segundo
 
-White = (255,255,255)
+FPS = 15
+
+#Bloques de la serpiente/comida
+
+Block_snake = 20
+
+#Colores
+
 Black = (0,0,0)
+White = (255,255,255)
+Red = (255,0,0)
 Green = (0,255,0)
-Blue = (50,153,213)
-Red = (213,50,80)
-Yellow = (255,255,102)
-
-# Definir tamaño de la serpiente
-Snake_block = 10
-Snake_speed = 15
+Blue = (0,0,255)
+Yellow = (255,255,0)
