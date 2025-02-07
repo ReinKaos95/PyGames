@@ -12,7 +12,7 @@ FPS = 15
 
 #Bloques de la serpiente/comida
 
-Block_snake = 20
+Block_size = 20
 
 #Colores
 

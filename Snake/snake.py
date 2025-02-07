@@ -25,9 +25,9 @@ class Snake:
             
     def change_direction(self, dx, dy):
         # Evitar que la serpiente se mueva en la dirección opuesta
-        if self.dx != -dx and self.dy != -dy:
-            self.dx += dx
-            self.dy += dy
+        if (self.dx + dx != 0) and (self.dy + dy != 0):
+            self.dx = dx
+            self.dy = dy
             
     def draw(self, screen):
         for block in self.body:
@@ -35,11 +35,11 @@ class Snake:
             
     def check_collision(self):
         # Colisión con los límites
-        if self.x < 0 or self.x >= Width or self.y < 0 >= Height:
+        if self.x < 0 or self.x >= Width or self.y < 0 or self.y >= Height:
             return True
         # Colisión consigo misma
         for block in self.body[:-1]:
-            if block == [self.x self.y]:
+            if block == [self.x, self.y]:
                 return True
         return False
     
