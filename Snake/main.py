@@ -1,7 +1,9 @@
-import pygame
+import pygame, random
 from config import *
 from snake import Snake
 from food import Food
+from powerup import PowerUp
+from poison import Poison
 
 def main():
     pygame.init()
@@ -11,10 +13,13 @@ def main():
     
     snake = Snake()
     food = Food()
+    powerup = PowerUp()
+    poison = Poison()
     score = 0
     running = True
     game_over = False
     speed = Initial_speed # Velocidad inicial
+    
     
     # Cargar high score
     global High_score
@@ -52,7 +57,6 @@ def main():
                 score += 1
                 
                 # Aumentar velocidad cada 5 puntos
-                
                 if score % 5 == 0:
                     speed += 1
                     
@@ -61,7 +65,25 @@ def main():
                     High_score = score
                     with open("high_score.dat", "wb") as file:
                         file.write(str(High_score).encode())
+            
+            # Generar power-up aleatoriamente (1% de probabilidad por frame)
+            if not powerup.active and random.randint(1, 100) == 1:
+                powerup.respawn(snake.body)
                 
+            # Verificar si la serpiente come el power-up
+            if powerup.active and snake.x == powerup.x and snake.y == powerup.y:
+                score += 5
+                powerup.active = False
+                
+            if not poison.active and random.randint(1, 10) == 1:
+                poison.respawn(snake.body)
+                
+            if poison.active and snake.x == poison.x and snake.y == poison.y:
+                snake.length = max(1, snake.length - 1)
+                speed = max(5, speed - 2)
+                poison.active = False
+                
+                        
             if snake.check_collision():
                 game_over = True
                 
@@ -69,6 +91,8 @@ def main():
         snake.draw(screen)
         food.draw(screen)
         
+        if powerup.active: powerup.draw(screen)
+        if poison.active: poison.draw(screen)
         # Mostrar puntuación, high score y nivel
         
         font = pygame.font.SysFont(None, 35)
