@@ -12,11 +12,19 @@ def main():
     snake = Snake()
     food = Food()
     score = 0
-    
-    
     running = True
     game_over = False
+    speed = Initial_speed # Velocidad inicial
     
+    # Cargar high score
+    global High_score
+    try:
+        with open("high_score.dat", "rb") as file:
+            High_score = int(file.read())
+    except FileNotFoundError:
+        High_score = 0
+
+
     
     while running:
         for event in pygame.event.get():
@@ -43,6 +51,17 @@ def main():
                 food.respawn(snake.body)
                 score += 1
                 
+                # Aumentar velocidad cada 5 puntos
+                
+                if score % 5 == 0:
+                    speed += 1
+                    
+                # Actualizar high score
+                if score > High_score:
+                    High_score = score
+                    with open("high_score.dat", "wb") as file:
+                        file.write(str(High_score).encode())
+                
             if snake.check_collision():
                 game_over = True
                 
@@ -50,10 +69,20 @@ def main():
         snake.draw(screen)
         food.draw(screen)
         
+        # Mostrar puntuación, high score y nivel
         
         font = pygame.font.SysFont(None, 35)
         score_text = font.render(f"Score: {score}", True, White)
         screen.blit(score_text, (10,10))
+        
+        # Mostrar high score en pantalla
+        high_score_text = font.render(f"High Score: {High_score}", True, White)
+        screen.blit(high_score_text, (Width - 200, 10))
+        
+        level_text = font.render(f"Level: {score // 5 + 1}", True, White)
+        screen.blit(level_text, (Width // 2 - 50, 10))
+        
+        # Manejar Game Over, reinicio y salida
         
         if game_over:
             
@@ -66,13 +95,14 @@ def main():
                 snake = Snake()
                 food = Food()
                 score = 0
+                speed = Initial_speed  # Reiniciar velocidad
                 game_over = False
             elif keys[pygame.K_q]:
-                running = False
+                running = False # Salir del juego
             
             
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(speed) # Usar la velocidad actual
         
     pygame.quit()
     

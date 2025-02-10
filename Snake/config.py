@@ -22,3 +22,10 @@ Red = (255,0,0)
 Green = (0,255,0)
 Blue = (0,0,255)
 Yellow = (255,255,0)
+
+#Puntuacion
+
+High_score = 0
+
+# Velocidad inicial
+Initial_speed = 15
