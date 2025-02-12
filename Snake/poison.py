@@ -11,8 +11,8 @@ class Poison:
         
     def respawn(self, snake_body):
         while True:
-            self.x = random.randint(0, (Width // Block_size) - 1)
-            self.y = random.randint(0, (Height // Block_size) - 1)
+            self.x = random.randint(0, (Width // Block_size) - 1) * Block_size
+            self.y = random.randint(0, (Height // Block_size) - 1) * Block_size
             if [self.x, self.y] not in snake_body:
                 self.active = True
                 break

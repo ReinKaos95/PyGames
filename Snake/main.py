@@ -72,6 +72,7 @@ def main():
                 
             # Verificar si la serpiente come el power-up
             if powerup.active and snake.x == powerup.x and snake.y == powerup.y:
+                speed = min(30, speed + 2)
                 score += 5
                 powerup.active = False
                 
@@ -81,6 +82,7 @@ def main():
             if poison.active and snake.x == poison.x and snake.y == poison.y:
                 snake.length = max(1, snake.length - 1)
                 speed = max(5, speed - 2)
+                score = max(0, score - 1)
                 poison.active = False
                 
                         
@@ -93,6 +95,8 @@ def main():
         
         if powerup.active: powerup.draw(screen)
         if poison.active: poison.draw(screen)
+        
+        
         # Mostrar puntuación, high score y nivel
         
         font = pygame.font.SysFont(None, 35)
@@ -109,15 +113,17 @@ def main():
         # Manejar Game Over, reinicio y salida
         
         if game_over:
-            
-            font = pygame.font.SysFont(None, 40)
+            font = pygame.font.SysFont(None, 25)
             game_over_text = font.render("Game Over! Press R to restart, Q to quit", True, White)
-            screen.blit(game_over_text, (Width // 2 - 150, Width // 2))
+            screen.blit(game_over_text, (Width // 2 - 150, Height // 2))  # Corregido
+            
             # Reiniciar al presionar R
             keys = pygame.key.get_pressed()
             if keys[pygame.K_r]:
                 snake = Snake()
                 food = Food()
+                powerup = PowerUp()
+                poison = Poison()
                 score = 0
                 speed = Initial_speed  # Reiniciar velocidad
                 game_over = False
