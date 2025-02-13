@@ -4,12 +4,19 @@ from snake import Snake
 from food import Food
 from powerup import PowerUp
 from poison import Poison
+from menu import *
+from game_over import *
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((Width, Height))
     pygame.display.set_caption(Title)
     clock = pygame.time.Clock()
+    
+    menu_option = menu(screen)
+    if menu_option == "quit":
+        pygame.quit()
+        return
     
     snake = Snake()
     food = Food()
@@ -32,6 +39,7 @@ def main():
 
     
     while running:
+        current_time = pygame.time.get_ticks()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -70,14 +78,22 @@ def main():
             if not powerup.active and random.randint(1, 100) == 1:
                 powerup.respawn(snake.body)
                 
+            # Verificar si el power-up ha estado activo por más de 5 segundos
+            if powerup.active and current_time - powerup.timer > 5000:  # 5000 ms = 5 segundos
+                powerup.active = False
+                
             # Verificar si la serpiente come el power-up
             if powerup.active and snake.x == powerup.x and snake.y == powerup.y:
                 speed = min(30, speed + 2)
                 score += 5
                 powerup.active = False
                 
-            if not poison.active and random.randint(1, 10) == 1:
+            if not poison.active and random.randint(1, 100) == 1:
                 poison.respawn(snake.body)
+                
+            # Verificar si el veneno ha estado activo por más de 5 segundos
+            if poison.active and current_time - poison.timer > 5000:  # 5000 ms = 5 segundos
+                poison.active = False
                 
             if poison.active and snake.x == poison.x and snake.y == poison.y:
                 snake.length = max(1, snake.length - 1)

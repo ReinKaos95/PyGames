@@ -8,6 +8,7 @@ class Poison:
         self.x = 0
         self.y = 0
         self.active = False
+        self.timer = 0
         
     def respawn(self, snake_body):
         while True:
@@ -15,6 +16,7 @@ class Poison:
             self.y = random.randint(0, (Height // Block_size) - 1) * Block_size
             if [self.x, self.y] not in snake_body:
                 self.active = True
+                self.timer = pygame.time.get_ticks()
                 break
         
     def draw(self, screen):

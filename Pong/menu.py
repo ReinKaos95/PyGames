@@ -1,10 +1,6 @@
-import pygame, sys
-from config import *
-from fonts import Fonts
-from utils import draw_button
+import pygame
 
-class Menu:
-    def __init__(self, screen):
+    def menu(self, screen):
         self.screen = screen
         self.fonts = Fonts()
 
@@ -23,7 +19,7 @@ class Menu:
         self.hover_sound = pygame.mixer.Sound("audio/hover.wav")  # Sonido al pasar el mouse (opcional)
         self.hover_sound_played = False  # Para evitar reproducir el sonido de hover repetidamente
         
-    def show(self):
+
         running = True
         while running:
             self.screen.fill(BLACK)
